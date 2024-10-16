@@ -1,2 +1,29 @@
 # Medical-Image-Process-Course
-Practices and Projects for HUST EIC course "Medical Image Process" 2024
+
+---
+
+这是华中科技大学电信学院闫增强老师 2024 年“医学图像处理”的课程实验代码
+
+## 实验要求
+
+对于任选的病变图片进行分割
+
+其中分割方式需要包括
+
+- 基础算法（阈值法、形态学方法等）
+- 基于聚类的分割方法
+- 基于图的分割方法
+- 基于主动轮廓的方法
+
+特征提取方式需要包括
+
+- 强度特征（灰度、梯度等）
+- 纹理特征（Gabor滤波、Laws Kernel等）
+- CNN特征
+
+评价指标必须至少涵盖
+
+- Dice
+- Sensitivety、Specificity、Accuracy 和 AUC
+
+选做：训练医学图像分割网络完成分割任务
