@@ -78,7 +78,7 @@ class ColorSpace_Grad_Clustering:
             np.concatenate((pixel_values, gradient_magnitude), axis=1)
             
             kmeans = KMeans(n_clusters=self.k, random_state=0)
-            kmeans.fit(pixel_values)
+            kmeans.fit(gradient_magnitude)
 
             labels = kmeans.labels_
             binary_mask = labels.reshape(image.shape[:2])
@@ -132,7 +132,7 @@ class ColorSpace_Texture_Clustering:
             np.concatenate((pixel_values, feature_img), axis=1)
 
             kmeans = KMeans(n_clusters=self.k, random_state=0)
-            kmeans.fit(pixel_values)
+            kmeans.fit(feature_img)
 
             labels = kmeans.labels_
             binary_mask = labels.reshape(image.shape[:2])

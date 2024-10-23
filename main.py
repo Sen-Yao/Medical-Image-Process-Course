@@ -23,6 +23,7 @@ def main_work(args, cfg):
 
     if args.model=="threshold":
         model = ThresholdSegmentationModel(cfg['threshold_segmentation']['threshold'])
+        
     elif args.model=="cluster":
         if args.feature in ["RGB", "HSV", "LAB"]:
             model = ColorSpace_Clustering(cfg['cluster_segmentation']['k'], args.feature)
@@ -37,7 +38,7 @@ def main_work(args, cfg):
             return 1
     elif args.model == "graph":
         model = GraphCutSegmentation(args.feature)
-    elif args.model == 'coutour':
+    elif args.model == 'contour':
         model = ActiveContourSegmentation()
     elif args.model == 'UNet':
         model_path = 'pretrain/UNet_' + args.dataset + '.pth'
@@ -48,10 +49,10 @@ def main_work(args, cfg):
             model.eval()
             print("Model loaded successfully.")
         else:
-            print("Pretrain model " + model_path + ", please train first")
+            print("Pretrain model " + model_path + " not exist, please train first")
 
     else:
-        print("Model Error!")
+        print("Model", args.model, "not exist!")
         return 1
     evaluate_model(dataset, model, int(args.batch_size))
 
