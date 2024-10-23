@@ -22,4 +22,4 @@ def prewitt(image):
 
     # 计算梯度幅度
     gradient_magnitude = np.sqrt(gradient_x**2 + gradient_y**2)
-    return gradient_magnitude
+    return gradient_magnitude.astype(np.uint8)

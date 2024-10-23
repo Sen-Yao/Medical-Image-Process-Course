@@ -38,6 +38,5 @@ def apply_laws_kernel(img):
         filtered_image = cv2.filter2D(img, cv2.CV_64F, kernel)
         filtered_images.append(filtered_image)
 
-    stacked_images = np.stack(filtered_images[:3], axis=-1)
-
+    stacked_images = np.stack(filtered_images[:3], axis=-1).astype('uint8')
     return stacked_images

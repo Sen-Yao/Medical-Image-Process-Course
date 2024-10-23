@@ -30,12 +30,11 @@ def main_work(args, cfg):
             print("Feature Error!")
             return 1
     elif args.model == "graph":
-        if args.feature in ["RGB", "HSV", "LAB"]:
-            model = GraphCutSegmentation()
+        model = GraphCutSegmentation(args.feature)
     else:
         print("Model Error!")
         return 1
-    evaluate_model(dataset, model)
+    evaluate_model(dataset, model, int(args.batch_size))
 
 
 if __name__ == "__main__":
@@ -53,6 +52,10 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "-c", "--config_path", default="config/default_config.yaml", help="the path of configuration"
+    )
+
+    parser.add_argument(
+        "-b", "--batch_size", default="16", help="Batch size of image processing"
     )
 
     args = parser.parse_args()
