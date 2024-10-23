@@ -1,16 +1,22 @@
 import argparse
 import torch
 import yaml
+import os
 
 from dataset import MedicalDataset
 from models.basic import ThresholdSegmentationModel
 from models.clustering import ColorSpace_Clustering, ColorSpace_Grad_Clustering, ColorSpace_Texture_Clustering, ResNet_Clustering
 from models.graph import GraphCutSegmentation, RandomWalkSegmentation
+from models.contours import ActiveContourSegmentation
+from models.CNN import UNet
+
+from train import train
 
 from evaluate import evaluate_model
 
 def main_work(args, cfg):
-    dataset = MedicalDataset("Classic", 'dataset/Data', 256, 'Data')
+    
+    dataset = MedicalDataset(args.dataset, 256)
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print("device: %s" % device)
@@ -31,6 +37,19 @@ def main_work(args, cfg):
             return 1
     elif args.model == "graph":
         model = GraphCutSegmentation(args.feature)
+    elif args.model == 'coutour':
+        model = ActiveContourSegmentation()
+    elif args.model == 'UNet':
+        model_path = 'pretrain/UNet_' + args.dataset + '.pth'
+        if os.path.exists(model_path):
+            model = UNet(in_channels=3, out_channels=1)
+            model = model.to(device)
+            model.load_state_dict(torch.load(model_path, weights_only=True))
+            model.eval()
+            print("Model loaded successfully.")
+        else:
+            print("Pretrain model " + model_path + ", please train first")
+
     else:
         print("Model Error!")
         return 1
@@ -39,7 +58,6 @@ def main_work(args, cfg):
 
 if __name__ == "__main__":
 
-
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
@@ -47,11 +65,15 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
-        "-f", "--feature", default="threshold", help="feature extraction"
+        "-f", "--feature", default="RGB", help="feature extraction"
     )
 
     parser.add_argument(
         "-c", "--config_path", default="config/default_config.yaml", help="the path of configuration"
+    )
+
+    parser.add_argument(
+        "-d", "--dataset", default="Data", help="Name of Dataset"
     )
 
     parser.add_argument(

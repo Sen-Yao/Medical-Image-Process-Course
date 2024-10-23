@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 from sklearn.metrics import confusion_matrix, roc_auc_score
+from tqdm import tqdm
 
 def calculate_metrics(y_true, y_pred):
     cm = confusion_matrix(y_true, y_pred).ravel()
@@ -32,7 +33,7 @@ def evaluate_model(dataset, model, batch_size=16):
     num_samples = len(dataset)
 
     # 处理每个批次
-    for start_idx in range(0, num_samples, batch_size):
+    for start_idx in tqdm(range(0, num_samples, batch_size), desc="Processing batches"):
         end_idx = min(start_idx + batch_size, num_samples)
         batch_images = []
         batch_true_masks = []
