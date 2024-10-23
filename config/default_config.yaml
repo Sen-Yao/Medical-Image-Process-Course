@@ -1,5 +1,5 @@
 threshold_segmentation:
-  threshold: 0.58
+  threshold: 0.6
 
 cluster_segmentation:
   k: 2

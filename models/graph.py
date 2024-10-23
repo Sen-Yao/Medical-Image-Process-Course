@@ -87,7 +87,7 @@ class GraphCutSegmentation:
             elif self.feature in ["gabor", "laws"]:
                 image = self._apply_texture(image)
             else:
-                print("\nFeature", self.feature, "Not Found!")
+                print("Feature", self.feature, "Not Found!")
                 return output
 
             # 使用 grabCut 进行图像分割
