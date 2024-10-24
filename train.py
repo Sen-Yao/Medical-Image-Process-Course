@@ -12,25 +12,22 @@ from torch.utils.data import DataLoader, random_split
 from evaluate import evaluate_model
 
 def train_model(model, dataset, num_epochs=50, batch_size=16, learning_rate=0.0001, device='cpu', savename="Data"):
-    # 将模型移动到指定的设备
     model.to(device)
     
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
-    criterion = nn.BCEWithLogitsLoss()  # 或者使用其他损失函数
+    criterion = nn.BCEWithLogitsLoss()  
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
     model.train()
     for epoch in range(num_epochs):
         for images, masks in dataloader:
 
-            # 将 NumPy 数组转换为 PyTorch 张量，并确保数据类型为 float32
             images = images.to(device).float()
             masks = masks.to(device).float()
             masks = masks / 255
 
-            # 调整图像和掩膜的形状
             images = images.permute(0, 3, 1, 2)  # 从 (batch_size, height, width, channels) 转换为 (batch_size, channels, height, width)
-            masks = masks.unsqueeze(1)  # 确保掩膜的形状为 (batch_size, 1, height, width)
+            masks = masks.unsqueeze(1)
             
 
             optimizer.zero_grad()
@@ -45,7 +42,7 @@ def train_model(model, dataset, num_epochs=50, batch_size=16, learning_rate=0.00
 
     if os.path.exists('pretrain') == False:
         os.mkdir('pretrain')
-    torch.save(model.state_dict(), model_path)  # 保存模型的状态字典
+    torch.save(model.state_dict(), model_path)
     print("Model Save at", model_path)
 
 def train(args, cfg):

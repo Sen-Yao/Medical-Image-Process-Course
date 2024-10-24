@@ -91,25 +91,19 @@ class UNet(nn.Module):
         返回:
         - predictions_np: 预测结果的 NumPy 数组，形状为 (B, W, H)
         """
-        # 将 NumPy 数组转换为 PyTorch 张量，并确保数据类型为 float32
         images = torch.tensor(images_np, dtype=torch.float32).to(self.device)
 
-        # 调整图像的形状
         images = images.permute(0, 3, 1, 2)  # 从 (B, W, H, C) 转换为 (B, C, H, W)
 
-        # 将模型设置为评估模式
         self.eval()
 
-        with torch.no_grad():  # 禁用梯度计算
-            outputs = self.forward(images)  # 进行预测
+        with torch.no_grad(): 
+            outputs = self.forward(images) 
 
-        # 应用 Sigmoid 激活函数
         outputs = torch.sigmoid(outputs)
 
-        # 将输出转换为 NumPy 数组
-        predictions_np = outputs.cpu().numpy()  # 转换为 NumPy 数组，移动到 CPU
+        predictions_np = outputs.cpu().numpy() 
 
-        # 取出预测结果，假设输出形状为 (B, 1, H, W)
         predictions_np = predictions_np.squeeze(1)  # 从 (B, 1, H, W) 转换为 (B, H, W)
         predictions_np = (predictions_np > 0.5).astype(np.float32)
 

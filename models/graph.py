@@ -31,7 +31,7 @@ class GraphCutSegmentation:
 
 
     def _preprocess_image(self, image):
-        image = cv2.resize(image, (256, 256))  # 调整大小
+        image = cv2.resize(image, (256, 256)) 
         image = image.transpose((2, 0, 1))  # 转换为 (C, H, W)
         image = torch.tensor(image, dtype=torch.float32).to(self.device) / 255.0
         return image.unsqueeze(0)  # 添加批次维度
@@ -45,7 +45,6 @@ class GraphCutSegmentation:
             image = cv2.Sobel(image, cv2.CV_64F, 1, 1, ksize=5)
             return image.astype(np.uint8)
         elif self.feature == "prewitt":
-            # 这里需要实现 Prewitt 算子
             return prewitt(image)
         elif self.feature == "canny":
             image = cv2.Canny(image, threshold1=100, threshold2=200)
@@ -65,7 +64,6 @@ class GraphCutSegmentation:
             gabor_kernel = cv2.getGaborKernel((ksize, ksize), sigma, theta, lamda, gamma, psi, ktype=cv2.CV_32F)
             return cv2.filter2D(image, cv2.CV_8UC3, gabor_kernel)
         elif self.feature == "laws":
-            # 这里需要实现 Laws 特征提取
             return apply_laws_kernel(image) 
         return image
 
@@ -93,7 +91,7 @@ class GraphCutSegmentation:
             # 使用 grabCut 进行图像分割
             bgd_model = np.zeros((1, 65), np.float64)
             fgd_model = np.zeros((1, 65), np.float64)
-            rect = (10, 10, W-10, H-10)  # 这里的 rect 需要根据实际情况调整
+            rect = (10, 10, W-10, H-10) 
             cv2.grabCut(image, mask, rect, bgd_model, fgd_model, 5, cv2.GC_INIT_WITH_RECT)
 
             mask2 = np.where((mask == 2) | (mask == 0), 0, 1).astype('uint8')
@@ -150,8 +148,8 @@ class RandomWalkSegmentation:
             
             # 初始化标记图，0为未标记，1为背景，2为前景
             markers = np.zeros(gray.shape, dtype=np.uint)
-            markers[gray < thresh] = 1  # 假设灰度值低于阈值为背景
-            markers[gray >= thresh] = 2  # 灰度值高于或等于阈值为前景（病变区域）
+            markers[gray < thresh] = 1 
+            markers[gray >= thresh] = 2 
             
             # 应用随机游走算法进行分割
             labels = random_walker(gray, markers, beta=self.beta, mode='bf')

@@ -36,11 +36,10 @@ class ColorSpace_Clustering:
             labels = kmeans.labels_
             binary_mask = labels.reshape(image.shape[:2])
 
-            # 生成二进制掩膜，假设我们只关心第一个聚类
             binary_mask = (binary_mask == 0).astype(np.uint8)
             binary_masks.append(binary_mask)
 
-        return np.array(binary_masks)  # 返回一个包含所有二进制掩膜的数组
+        return np.array(binary_masks)
     
 
 class ColorSpace_Grad_Clustering:
@@ -83,11 +82,10 @@ class ColorSpace_Grad_Clustering:
             labels = kmeans.labels_
             binary_mask = labels.reshape(image.shape[:2])
 
-            # 生成二进制掩膜，假设我们只关心第一个聚类
             binary_mask = (binary_mask == 0).astype(np.uint8)
             binary_masks.append(binary_mask)
 
-        return np.array(binary_masks)  # 返回一个包含所有二进制掩膜的数组
+        return np.array(binary_masks) 
     
 
 class ColorSpace_Texture_Clustering:
@@ -137,11 +135,10 @@ class ColorSpace_Texture_Clustering:
             labels = kmeans.labels_
             binary_mask = labels.reshape(image.shape[:2])
 
-            # 生成二进制掩膜，假设我们只关心第一个聚类
             binary_mask = (binary_mask == 0).astype(np.uint8)
             binary_masks.append(binary_mask)
 
-        return np.array(binary_masks)  # 返回一个包含所有二进制掩膜的数组
+        return np.array(binary_masks) 
 
 
 class ResNet_Clustering:
@@ -151,7 +148,7 @@ class ResNet_Clustering:
         self.model = models.segmentation.deeplabv3_resnet101(weights='DEFAULT').to(self.device)
         self.model.eval()
     def preprocess_image(self, image):
-        image = cv2.resize(image, (256, 256))  # 调整大小
+        image = cv2.resize(image, (256, 256))
         image = image.transpose((2, 0, 1))  # 转换为 (C, H, W)
         image = torch.tensor(image, dtype=torch.float32).to(self.device) / 255.0
         return image.unsqueeze(0)  # 添加批次维度
@@ -164,10 +161,10 @@ class ResNet_Clustering:
         # 预处理所有图像并将它们堆叠成一个批次
         img_tensors = torch.cat([self.preprocess_image(image) for image in images], dim=0)
 
-        with torch.no_grad():  # 禁用梯度计算
-            features = self.model(img_tensors)['out']  # 获取特征
+        with torch.no_grad():
+            features = self.model(img_tensors)['out']
         
-        features = features.cpu().numpy()  # 转换为 NumPy 数组
+        features = features.cpu().numpy()
         N, C, H, W = features.shape
         features = features.reshape((N, H * W, C))
 
@@ -183,4 +180,4 @@ class ResNet_Clustering:
             binary_mask = (binary_mask == 0).astype(np.uint8)
             binary_masks.append(binary_mask)
 
-        return np.array(binary_masks)  # 返回一个包含所有二进制掩膜的数组
+        return np.array(binary_masks)

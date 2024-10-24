@@ -25,11 +25,9 @@ def create_laws_kernels():
 
 def apply_laws_kernel(img):
     """应用 Laws Kernel 到输入图像"""
-    # 确保输入图像为灰度图
     if len(img.shape) == 3:
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-    # 生成 Laws Kernel
     laws_kernels = create_laws_kernels()
 
     # 应用每个 Laws Kernel
@@ -37,7 +35,6 @@ def apply_laws_kernel(img):
     for kernel in laws_kernels:
         filtered_image = cv2.filter2D(img, cv2.CV_64F, kernel)
         
-        # 归一化到 0-255 范围
         filtered_image = cv2.normalize(filtered_image, None, 0, 255, cv2.NORM_MINMAX)
         
         filtered_images.append(filtered_image)

@@ -48,20 +48,17 @@ class MedicalDataset(Dataset):
     def __getitem__(self, idx):
         image_path, annotation_path = self.data_paths[idx]
         
-        # 使用 OpenCV 加载图像和注释
         image = cv2.imread(image_path)
-        annotation = cv2.imread(annotation_path, cv2.IMREAD_GRAYSCALE)  # 假设注释是单通道图像
+        annotation = cv2.imread(annotation_path, cv2.IMREAD_GRAYSCALE) 
         
         # 检查图像是否成功加载
         if image is None or annotation is None:
             raise FileNotFoundError(f"Image or annotation not found: {image_path} or {annotation_path}")
 
-        # 进行裁剪或其他预处理
         if self.crop_size:
             image = cv2.resize(image, (self.crop_size, self.crop_size))
             annotation = cv2.resize(annotation, (self.crop_size, self.crop_size))
 
-        # 将图像从 BGR 转换为 RGB
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
         return image, annotation

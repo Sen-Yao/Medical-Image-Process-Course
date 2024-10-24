@@ -24,7 +24,6 @@ def prewitt(image):
     gradient_x = cv2.filter2D(image, cv2.CV_64F, prewitt_x)
     gradient_y = cv2.filter2D(image, cv2.CV_64F, prewitt_y)
 
-    # 计算梯度幅度
     gradient_magnitude = np.sqrt(gradient_x**2 + gradient_y**2)
 
     # 归一化到 0-255 范围
