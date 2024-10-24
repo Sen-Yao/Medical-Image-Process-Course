@@ -26,6 +26,9 @@ class UNet(nn.Module):
         # 输出层
         self.final_conv = nn.Conv2d(128, out_channels, kernel_size=1)
 
+        # 初始化参数
+        self.initialize_weights()
+
     def conv_block(self, in_channels, out_channels):
         return nn.Sequential(
             nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1),
@@ -41,7 +44,7 @@ class UNet(nn.Module):
         )
 
     def forward(self, x):
-    # 编码
+        # 编码
         enc1 = self.encoder1(x)
         enc2 = self.encoder2(nn.MaxPool2d(2)(enc1))
         enc3 = self.encoder3(nn.MaxPool2d(2)(enc2))
@@ -53,7 +56,6 @@ class UNet(nn.Module):
         # 解码
         dec4 = self.decoder4(bottleneck)
         dec4 = torch.cat((dec4, enc4), dim=1)  # skip connection
-        # Error
         dec3 = self.decoder3(dec4)
         dec3 = torch.cat((dec3, enc3), dim=1)  # skip connection
         dec2 = self.decoder2(dec3)
@@ -61,9 +63,22 @@ class UNet(nn.Module):
         dec1 = self.decoder1(dec2)
         dec1 = torch.cat((dec1, enc1), dim=1)  # skip connection
 
-
         return self.final_conv(dec1)
-    
+
+    def initialize_weights(self):
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d):
+                nn.init.kaiming_normal_(m.weight, mode='fan_in', nonlinearity='relu')
+                if m.bias is not None:
+                    nn.init.zeros_(m.bias)
+            elif isinstance(m, nn.ConvTranspose2d):
+                nn.init.kaiming_normal_(m.weight, mode='fan_in', nonlinearity='relu')
+                if m.bias is not None:
+                    nn.init.zeros_(m.bias)
+            elif isinstance(m, nn.BatchNorm2d):
+                nn.init.ones_(m.weight)
+                nn.init.zeros_(m.bias)
+
     def predict(self, images_np):
         """
         使用训练好的模型进行预测。

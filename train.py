@@ -11,7 +11,7 @@ from models.CNN import UNet
 from torch.utils.data import DataLoader, random_split
 from evaluate import evaluate_model
 
-def train_model(model, dataset, num_epochs=10, batch_size=16, learning_rate=0.001, device='cpu', savename="Data"):
+def train_model(model, dataset, num_epochs=50, batch_size=16, learning_rate=0.0001, device='cpu', savename="Data"):
     # 将模型移动到指定的设备
     model.to(device)
     
@@ -60,7 +60,7 @@ def train(args, cfg):
     print("device: %s" % device)
 
     model = UNet(in_channels=3, out_channels=1)
-    train_model(model, train_dataset, num_epochs=10, batch_size=16, learning_rate=0.001, device=device, savename=dataset.data_name)
+    train_model(model, train_dataset, num_epochs=8, batch_size=8, learning_rate=10E-5, device=device, savename=dataset.data_name)
 
     print("Evaluating...")
     evaluate_model(test_dataset, model, int(args.eval_batch_size))

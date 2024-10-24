@@ -36,7 +36,12 @@ def apply_laws_kernel(img):
     filtered_images = []
     for kernel in laws_kernels:
         filtered_image = cv2.filter2D(img, cv2.CV_64F, kernel)
+        
+        # 归一化到 0-255 范围
+        filtered_image = cv2.normalize(filtered_image, None, 0, 255, cv2.NORM_MINMAX)
+        
         filtered_images.append(filtered_image)
 
+    # 选择前 3 个过滤后的图像并堆叠
     stacked_images = np.stack(filtered_images[:3], axis=-1).astype('uint8')
     return stacked_images
